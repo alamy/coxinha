@@ -1,0 +1,140 @@
+{
+  "pedidos": [
+    {
+      "id": 1,
+      "cliente": "Neto",
+      "itens": [
+        {
+          "id": 1,
+          "nome": "Frango com queijo",
+          "quantidade": 2,
+          "preco": 6.00
+        },
+        {
+          "id": 2,
+          "nome": "Frango com bacon",
+          "quantidade": 1,
+          "preco": 6.50
+        }
+      ],
+      "total": 18.50,
+      "status": "preparando",
+      "data": "2025-11-15T10:30:00",
+      "observacoes": ""
+    },
+    {
+      "id": 2,
+      "cliente": "Gabi",
+      "itens": [
+        {
+          "id": 3,
+          "nome": "Carne de sol com catupiry",
+          "quantidade": 3,
+          "preco": 7.00
+        }
+      ],
+      "total": 21.00,
+      "status": "preparando",
+      "data": "2025-11-15T10:45:00",
+      "observacoes": "Sem cebola"
+    },
+    {
+      "id": 3,
+      "cliente": "Amanda",
+      "itens": [
+        {
+          "id": 4,
+          "nome": "Calabresa com queijo",
+          "quantidade": 2,
+          "preco": 6.50
+        },
+        {
+          "id": 11,
+          "nome": "Cocada",
+          "quantidade": 2,
+          "preco": 5.00
+        }
+      ],
+      "total": 23.00,
+      "status": "preparando",
+      "data": "2025-11-15T11:00:00",
+      "observacoes": ""
+    },
+    {
+      "id": 4,
+      "cliente": "Ary",
+      "itens": [
+        {
+          "id": 6,
+          "nome": "Camarão",
+          "quantidade": 4,
+          "preco": 8.00
+        }
+      ],
+      "total": 32.00,
+      "status": "pronto",
+      "data": "2025-11-15T09:30:00",
+      "observacoes": ""
+    },
+    {
+      "id": 5,
+      "cliente": "Ceça",
+      "itens": [
+        {
+          "id": 5,
+          "nome": "Jaca",
+          "quantidade": 3,
+          "preco": 6.00
+        },
+        {
+          "id": 9,
+          "nome": "Brigadeiro",
+          "quantidade": 2,
+          "preco": 5.00
+        }
+      ],
+      "total": 28.00,
+      "status": "pronto",
+      "data": "2025-11-15T09:15:00",
+      "observacoes": "Bem quente"
+    },
+    {
+      "id": 6,
+      "cliente": "Carlos",
+      "itens": [
+        {
+          "id": 7,
+          "nome": "Pernil suíno",
+          "quantidade": 2,
+          "preco": 7.00
+        }
+      ],
+      "total": 14.00,
+      "status": "pendente",
+      "data": "2025-11-15T11:30:00",
+      "observacoes": ""
+    },
+    {
+      "id": 7,
+      "cliente": "Maria",
+      "itens": [
+        {
+          "id": 8,
+          "nome": "Banana com charque",
+          "quantidade": 1,
+          "preco": 7.50
+        },
+        {
+          "id": 10,
+          "nome": "Doce de leite",
+          "quantidade": 3,
+          "preco": 5.00
+        }
+      ],
+      "total": 22.50,
+      "status": "entregue",
+      "data": "2025-11-15T08:00:00",
+      "observacoes": ""
+    }
+  ]
+}
