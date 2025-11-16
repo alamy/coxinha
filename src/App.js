@@ -19,9 +19,9 @@ function NavBar() {
         <li>
           <Link to="/cardapio">Cardápio</Link>
         </li>
-        {/* <li>
+        <li>
           <Link to="/visualizar">Visualizar</Link>
-        </li> */}
+        </li>
         <li>
           <Link to="/pedidos">Pedidos</Link>
         </li>
