@@ -4,7 +4,7 @@ import { useAppContext } from '../AppContext';
 import { FaPencilAlt, FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa';
 
 function Pedidos() {
-  const { pedidos, cardapio, adicionarPedido, atualizarPedido, deletarPedido, mudarStatusPedido } = useAppContext();
+  const { pedidos, cardapio, adicionarPedido, atualizarPedido, deletarPedido, mudarStatusPedido, marcarComoPago } = useAppContext();
   const [mostrarForm, setMostrarForm] = useState(false);
   const [editando, setEditando] = useState(null);
   const [formData, setFormData] = useState({
@@ -247,6 +247,7 @@ function Pedidos() {
                 <th>Itens</th>
                 <th style={{ textAlign: 'center' }}>Total</th>
                 <th style={{ textAlign: 'center' }}>Status</th>
+                <th style={{ textAlign: 'center' }}>Pagamento</th>
                 <th style={{ textAlign: 'center' }}>Ações</th>
               </tr>
             </thead>
@@ -287,6 +288,18 @@ function Pedidos() {
                       <option value="pronto">✅ Pronto</option>
                       <option value="entregue">📦 Entregue</option>
                     </select>
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <label className="checkbox-pago">
+                      <input
+                        type="checkbox"
+                        checked={pedido.pago || false}
+                        onChange={(e) => marcarComoPago(pedido.id, e.target.checked)}
+                      />
+                      <span className={`status-pagamento ${pedido.pago ? 'pago' : 'nao-pago'}`}>
+                        {pedido.pago ? '💰 Pago' : '⏳ Pendente'}
+                      </span>
+                    </label>
                   </td>
                   <td>
                     <div className="acoes-container">

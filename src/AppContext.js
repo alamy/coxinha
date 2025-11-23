@@ -87,7 +87,8 @@ export const AppProvider = ({ children }) => {
       total: dadosPedido.itens.reduce((acc, item) => acc + (item.preco * item.quantidade), 0),
       status: 'pendente',
       data: new Date().toISOString(),
-      observacoes: dadosPedido.observacoes || ''
+      observacoes: dadosPedido.observacoes || '',
+      pago: false
     };
     setPedidos([...pedidos, novoPedido]);
   };
@@ -109,6 +110,12 @@ export const AppProvider = ({ children }) => {
   const mudarStatusPedido = (id, novoStatus) => {
     setPedidos(pedidos.map(p => 
       p.id === id ? { ...p, status: novoStatus } : p
+    ));
+  };
+
+  const marcarComoPago = (id, statusPago) => {
+    setPedidos(pedidos.map(p => 
+      p.id === id ? { ...p, pago: statusPago } : p
     ));
   };
 
@@ -138,6 +145,7 @@ export const AppProvider = ({ children }) => {
     atualizarPedido,
     deletarPedido,
     mudarStatusPedido,
+    marcarComoPago,
     adicionarItemCardapio,
     atualizarItemCardapio,
     deletarItemCardapio,

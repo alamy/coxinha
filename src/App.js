@@ -4,6 +4,7 @@ import { AppProvider } from './AppContext';
 import Visualizar from './pages/Visualizar';
 import Pedidos from './pages/Pedidos';
 import Cardapio from './pages/Cardapio';
+import Caixa from './pages/Caixa';
 
 function NavBar() {
   const location = useLocation();
@@ -25,6 +26,9 @@ function NavBar() {
         <li>
           <Link to="/pedidos">Pedidos</Link>
         </li>
+        <li>
+          <Link to="/caixa">Caixa</Link>
+        </li>
       </ul>
     </nav>
   );
@@ -41,6 +45,7 @@ function App() {
             <Route path="/cardapio" element={<Cardapio />} />
             <Route path="/visualizar" element={<Visualizar />} />
             <Route path="/pedidos" element={<Pedidos />} />
+            <Route path="/caixa" element={<Caixa />} />
             <Route path="/" element={<Cardapio />} />
           </Routes>
         </div>

@@ -1,0 +1,14 @@
+{
+  "historico": [],
+  "metas": {
+    "diaria": 300.00,
+    "semanal": 2100.00,
+    "mensal": 9000.00
+  },
+  "estatisticas": {
+    "ticketMedio": 0.00,
+    "produtoMaisVendido": "Nenhum",
+    "horarioPico": "18:00-20:00",
+    "taxaCrescimento": 0.0
+  }
+}
