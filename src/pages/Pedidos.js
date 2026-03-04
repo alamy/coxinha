@@ -5,7 +5,7 @@ import './Pedidos.css';
 import { FaPencilAlt, FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa';
 
 function Pedidos() {
-  const { pedidos, cardapio, adicionarPedido, atualizarPedido, deletarPedido, mudarStatusPedido, marcarComoPago, perfil } = useAppContext();
+  const { pedidos, cardapio, adicionarPedido, atualizarPedido, deletarPedido, mudarStatusPedido, marcarComoPago } = useAppContext();
 
   const audioPronto = useRef(null);
 
