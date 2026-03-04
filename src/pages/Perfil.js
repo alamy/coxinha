@@ -1,17 +1,17 @@
 
-  import React, { useEffect, useState } from 'react';
+  import React, { useEffect, useState, useMemo } from 'react';
   import { useAppContext } from '../AppContext';
   import './Perfil.css';
 
   export default function Perfil() {
     const { perfil, setPerfil } = useAppContext();
-    const colors = ['#d2691e', '#e63946', '#2a9d8f', '#264653'];
-    const backgrounds = ['#fef3e2', '#fffbe6', '#f0f4f8', '#fff'];
-    const textColors = ['#222', '#333', '#fff', '#a0522d'];
-    const pedidosMenuColors = ['#a0522d', '#e67e22', '#34495e', '#16a085'];
+    const colors = useMemo(() => ['#d2691e', '#e63946', '#2a9d8f', '#264653'], []);
+    const backgrounds = useMemo(() => ['#fef3e2', '#fffbe6', '#f0f4f8', '#fff'], []);
+    const textColors = useMemo(() => ['#222', '#333', '#fff', '#a0522d'], []);
+    const pedidosMenuColors = useMemo(() => ['#a0522d', '#e67e22', '#34495e', '#16a085'], []);
     // tabelaCardapioColors removed: table color is global `corTabelas` now
-    const headerColors = ['#264653', '#2a9d8f', '#e63946', '#34495e'];
-    const tableColors = ['#34495e', '#2c3e50', '#16a085', '#a0522d'];
+    const headerColors = useMemo(() => ['#264653', '#2a9d8f', '#e63946', '#34495e'], []);
+    const tableColors = useMemo(() => ['#34495e', '#2c3e50', '#16a085', '#a0522d'], []);
 
     const [nome, setNome] = useState(perfil?.nomeSistema || '');
     const [cor, setCor] = useState(perfil?.cor || colors[0]);
@@ -29,7 +29,7 @@
       setCorMenuPedidos(perfil?.corMenuPedidos || pedidosMenuColors[0]);
       setCorCabecalho(perfil?.corCabecalho || headerColors[0]);
       setCorTabelas(perfil?.corTabelas || tableColors[0]);
-    }, [perfil]);
+    }, [perfil, colors, backgrounds, textColors, pedidosMenuColors, headerColors, tableColors]);
 
     function handleSalvar(e) {
       e.preventDefault();
