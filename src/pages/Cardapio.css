@@ -1,75 +1,142 @@
 /* Container Principal */
 .cardapio-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 50%, #ffd9a8 100%);
+  background: linear-gradient(135deg, var(--background-color, #f4f8ff) 0%, #eef6ff 50%, #f7fbff 100%);
   padding: 50px 30px;
 }
 
 /* Header */
 .cardapio-header {
-  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(139, 69, 19, 0.3);
-  padding: 50px 40px;
-  margin-bottom: 40px;
+  background: linear-gradient(135deg, var(--header-color, #0b5ed7) 0%, #0a53c3 100%);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(10, 60, 120, 0.12);
+  padding: 40px 30px;
+  margin-bottom: 32px;
   text-align: center;
 }
 
 .cardapio-header h1 {
-  color: #fef3e2;
-  font-size: 3.5rem;
+  color: var(--header-text-color, #ffffff);
+  font-size: 2.6rem;
   font-weight: 800;
-  margin: 0 0 15px 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 0 0 10px 0;
+  text-shadow: 0 2px 6px rgba(3, 45, 90, 0.12);
 }
 
 .cardapio-header p {
-  color: #ffd9a8;
-  font-size: 1.3rem;
+  color: rgba(255,255,255,0.9);
+  font-size: 1.05rem;
   margin: 0;
   font-weight: 600;
 }
 
+/* Barra de Filtros */
+.cardapio-filtros {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(8, 30, 80, 0.06);
+  padding: 20px 25px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cardapio-busca-container {
+  flex: 1;
+  min-width: 250px;
+}
+
+.cardapio-busca {
+  width: 80%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 2px solid rgba(13,110,253,0.12);
+  border-radius: 10px;
+  transition: all 0.18s ease;
+  background: #ffffff;
+}
+
+.cardapio-busca:focus {
+  outline: none;
+  border-color: #d2691e;
+  box-shadow: 0 0 0 4px rgba(210, 105, 30, 0.1);
+}
+
+.cardapio-filtros-categoria {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-filtro {
+  background: #f0f4f9;
+  color: var(--brand-color, #0d6efd);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border: 2px solid #e0e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-filtro:hover {
+  background: #e8eff9;
+  border-color: #d2691e;
+  color: #d2691e;
+  transform: translateY(-2px);
+}
+
+.btn-filtro.ativo {
+  background: linear-gradient(135deg, var(--brand-color, #0d6efd) 0%, #4dabff 100%);
+  color: white;
+  border-color: var(--brand-color, #0d6efd);
+  box-shadow: 0 6px 18px rgba(13, 110, 253, 0.18);
+}
+
 /* Botão Adicionar */
 .btn-adicionar-item {
-  background: linear-gradient(135deg, #d2691e 0%, #ff8c42 100%);
+  background: linear-gradient(135deg, var(--brand-color, #0d6efd) 0%, #4dabff 100%);
   color: white;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  padding: 20px 50px;
+  padding: 14px 30px;
   border: none;
-  border-radius: 15px;
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(210, 105, 30, 0.4);
-  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(13, 110, 253, 0.18);
+  transition: all 0.22s ease;
   display: inline-block;
-  margin: 0 auto 40px;
+  margin: 0 auto 28px;
 }
 
 .btn-adicionar-item:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 10px 30px rgba(210, 105, 30, 0.6);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 28px rgba(13, 110, 253, 0.25);
 }
 
 /* Formulário */
 .cardapio-form-container {
   background: white;
-  border-radius: 25px;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-  padding: 50px 60px;
-  margin-bottom: 50px;
-  border: 5px solid #d2691e;
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(8, 30, 80, 0.06);
+  padding: 30px 36px;
+  margin-bottom: 36px;
+  border: 2px solid var(--brand-color, #0d6efd);
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .cardapio-form-container h2 {
-  color: #8b4513;
-  font-size: 2.5rem;
+  color: var(--brand-color, #0d6efd);
+  font-size: 1.8rem;
   font-weight: 800;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 
 .cardapio-form-group {
@@ -78,20 +145,20 @@
 
 .cardapio-form-label {
   display: block;
-  color: #8b4513;
-  font-size: 1.3rem;
+  color: var(--brand-color, #0d6efd);
+  font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .cardapio-form-input {
   width: 100%;
-  padding: 18px 25px;
-  font-size: 1.2rem;
-  border: 3px solid #ffd9a8;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  background: #fffaf5;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 2px solid rgba(13,110,253,0.12);
+  border-radius: 10px;
+  transition: all 0.18s ease;
+  background: #ffffff;
 }
 
 .cardapio-form-input:focus {
@@ -104,10 +171,10 @@
 .cardapio-checkbox-container {
   display: flex;
   align-items: center;
-  background: #fff5e6;
-  padding: 20px 25px;
-  border-radius: 12px;
-  border: 3px solid #ffd9a8;
+  background: #ffffff;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(3,45,90,0.04);
 }
 
 .cardapio-checkbox {
@@ -133,49 +200,49 @@
 
 .btn-salvar {
   flex: 1;
-  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: 700;
-  padding: 20px;
+  padding: 12px;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(22, 163, 74, 0.3);
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 18px rgba(16,185,129,0.16);
 }
 
 .btn-salvar:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(22, 163, 74, 0.4);
+  box-shadow: 0 10px 28px rgba(16,185,129,0.2);
 }
 
 .btn-cancelar-form {
   flex: 1;
   background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
   color: white;
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: 700;
-  padding: 20px;
+  padding: 12px;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(107, 114, 128, 0.3);
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 18px rgba(99,102,106,0.12);
 }
 
 .btn-cancelar-form:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+  box-shadow: 0 10px 28px rgba(99,102,106,0.16);
 }
 
 /* Tabela */
 .cardapio-table-container {
   background: white;
-  border-radius: 25px;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(8, 30, 80, 0.06);
   overflow: hidden;
-  border: 5px solid #d2691e;
+  border: 2px solid rgba(3,45,90,0.06);
 }
 
 .cardapio-table {
@@ -184,14 +251,14 @@
 }
 
 .cardapio-table thead {
-  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+  background: var(--table-color, #e9f5ff);
 }
 
 .cardapio-table th {
-  color: white;
-  padding: 25px 30px;
+  color: var(--text-color, #0b2540);
+  padding: 16px 18px;
   text-align: left;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -203,8 +270,8 @@
 }
 
 .cardapio-table tbody tr:hover {
-  background: #fff5e6;
-  transform: scale(1.01);
+  background: #fbfdff;
+  transform: translateY(-2px);
 }
 
 .cardapio-table td {
@@ -213,29 +280,40 @@
 }
 
 .cardapio-item-numero {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 800;
-  color: #8b4513;
+  color: var(--brand-color, #0d6efd);
 }
 
 .cardapio-item-nome {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #333;
+  color: #213547;
 }
 
 .cardapio-preco-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-  border: 3px solid #10b981;
-  border-radius: 12px;
-  padding: 12px 25px;
+  background: linear-gradient(135deg, rgba(13,110,253,0.06) 0%, rgba(13,110,253,0.03) 100%);
+  border: 1px solid rgba(13,110,253,0.08);
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+.cardapio-categoria-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(210, 105, 30, 0.08) 0%, rgba(210, 105, 30, 0.04) 100%);
+  border: 2px solid rgba(210, 105, 30, 0.12);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 700;
+  color: #8b4513;
+  font-size: 0.95rem;
 }
 
 .cardapio-preco-valor {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: #047857;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--brand-color, #0d6efd);
 }
 
 /* Badge de Status */
@@ -251,13 +329,13 @@
 }
 
 .status-disponivel {
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
   color: #065f46;
   border-color: #10b981;
 }
 
 .status-indisponivel {
-  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
   color: #991b1b;
   border-color: #ef4444;
 }

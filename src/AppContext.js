@@ -78,8 +78,84 @@ export const AppProvider = ({ children }) => {
     }
   }, [cardapio]);
 
+  // Perfil do sistema (nome e cor) - persistido no localStorage
+  const [perfil, setPerfil] = useState(() => {
+    const saved = localStorage.getItem('perfil');
+    return saved
+      ? JSON.parse(saved)
+      : {
+          nomeSistema: 'Comadre Coxinha',
+          cor: '#0d6efd',              // brand default: blue
+          background: '#f4f8ff',       // light blue background
+          texto: '#0b2540',            // dark bluish text for contrast
+          corMenuPedidos: '#0b5ed7',   // darker blue for pedidos menu
+          corCabecalho: '#0b5ed7',     // header default
+          corTabelas: '#e9f5ff'        // light table header background
+        };
+  });
+
+  // Aplicar cor escolhida como variável CSS global e persistir
+  useEffect(() => {
+    if (perfil) {
+      if (perfil.cor) {
+        document.documentElement.style.setProperty('--brand-color', perfil.cor);
+      }
+      if (perfil.background) {
+        document.documentElement.style.setProperty('--background-color', perfil.background);
+      }
+      if (perfil.texto) {
+        document.documentElement.style.setProperty('--text-color', perfil.texto);
+      }
+      if (perfil.corMenuPedidos) {
+        document.documentElement.style.setProperty('--pedidos-header-color', perfil.corMenuPedidos);
+      }
+      // corTabelaCardapio removed from perfil (no longer configurable per-cardápio)
+      if (perfil.corCabecalho) {
+        document.documentElement.style.setProperty('--header-color', perfil.corCabecalho);
+      }
+      if (perfil.corTabelas) {
+        document.documentElement.style.setProperty('--table-color', perfil.corTabelas);
+      }
+    }
+    // persistir no localStorage e disparar evento para outras abas
+    dispatchStorageUpdate('perfil', perfil);
+  }, [perfil]);
+
   // Funções para gerenciar pedidos
   const adicionarPedido = (dadosPedido) => {
+    // Validar estoque antes de criar o pedido
+    if (!Array.isArray(dadosPedido.itens) || dadosPedido.itens.length === 0) {
+      return { success: false, message: 'Pedido sem itens.' };
+    }
+
+    // Verifica disponibilidade
+    for (const pedidoItem of dadosPedido.itens) {
+      const encontrado = pedidoItem.id
+        ? cardapio.find(c => c.id === pedidoItem.id)
+        : cardapio.find(c => c.nome === pedidoItem.nome);
+      if (!encontrado) {
+        return { success: false, message: `Item não encontrado: ${pedidoItem.nome || pedidoItem.id}` };
+      }
+      const atualEstoque = parseInt(encontrado.estoque || 0, 10);
+      const quantidadePedido = parseInt(pedidoItem.quantidade || pedidoItem.quantidade === 0 ? pedidoItem.quantidade : 0, 10) || 0;
+      if (quantidadePedido > atualEstoque) {
+        return { success: false, message: `Estoque insuficiente para ${encontrado.nome}. Disponível: ${atualEstoque}, requisitado: ${quantidadePedido}` };
+      }
+    }
+
+    // Se chegou aqui, estoque é suficiente — aplicar dedução
+    dadosPedido.itens.forEach((pedidoItem) => {
+      const encontrado = pedidoItem.id
+        ? cardapio.find(c => c.id === pedidoItem.id)
+        : cardapio.find(c => c.nome === pedidoItem.nome);
+      if (encontrado) {
+        const atualEstoque = parseInt(encontrado.estoque || 0, 10);
+        const quantidadePedido = parseInt(pedidoItem.quantidade || 0, 10);
+        const novoEstoque = Math.max(0, atualEstoque - quantidadePedido);
+        atualizarEstoque(encontrado.id, novoEstoque);
+      }
+    });
+
     const novoPedido = {
       id: pedidos.length > 0 ? Math.max(...pedidos.map(p => p.id)) + 1 : 1,
       cliente: dadosPedido.cliente,
@@ -90,27 +166,102 @@ export const AppProvider = ({ children }) => {
       observacoes: dadosPedido.observacoes || '',
       pago: false
     };
+
     setPedidos([...pedidos, novoPedido]);
+    return { success: true, pedido: novoPedido };
+  };
+
+  // Restaura o estoque dos itens de um pedido (uso em cancelamento/deleção)
+  const restaurarEstoqueDoPedido = (pedido) => {
+    if (!pedido || !Array.isArray(pedido.itens)) return;
+    pedido.itens.forEach((pedidoItem) => {
+      const encontrado = pedidoItem.id
+        ? cardapio.find(c => c.id === pedidoItem.id)
+        : cardapio.find(c => c.nome === pedidoItem.nome);
+      if (encontrado) {
+        const atual = parseInt(encontrado.estoque || 0, 10);
+        const quantidade = parseInt(pedidoItem.quantidade || 0, 10);
+        const novo = atual + quantidade;
+        atualizarEstoque(encontrado.id, novo);
+      }
+    });
   };
 
   const atualizarPedido = (id, dadosAtualizados) => {
-    setPedidos(pedidos.map(p => 
-      p.id === id ? {
-        ...p,
-        ...dadosAtualizados,
-        data: new Date().toISOString()
-      } : p
-    ));
+    const pedidoAntigo = pedidos.find(p => p.id === id);
+    if (!pedidoAntigo) return { success: false, message: 'Pedido não encontrado.' };
+
+    const novosItens = Array.isArray(dadosAtualizados.itens) ? dadosAtualizados.itens : pedidoAntigo.itens;
+
+    // Montar mapa de quantidades antigas e novas por item id (ou nome como fallback)
+    const mapaAntigo = new Map();
+    pedidoAntigo.itens.forEach(it => {
+      const key = it.id != null ? `id:${it.id}` : `nome:${it.nome}`;
+      mapaAntigo.set(key, parseInt(it.quantidade || 0, 10));
+    });
+
+    const mapaNovo = new Map();
+    novosItens.forEach(it => {
+      const key = it.id != null ? `id:${it.id}` : `nome:${it.nome}`;
+      mapaNovo.set(key, parseInt(it.quantidade || 0, 10));
+    });
+
+    // Verificar se há estoque suficiente para os aumentos de quantidade
+    for (const [key, novaQtd] of mapaNovo.entries()) {
+      const antigoQtd = mapaAntigo.get(key) || 0;
+      const delta = novaQtd - antigoQtd; // >0 significa precisa reduzir estoque adicional
+      if (delta > 0) {
+        // localizar item no cardapio
+        const [, val] = key.split(':');
+        const encontrado = key.startsWith('id:') ? cardapio.find(c => c.id === parseInt(val, 10)) : cardapio.find(c => c.nome === val);
+        if (!encontrado) return { success: false, message: `Item do pedido não encontrado: ${val}` };
+        const atualEstoque = parseInt(encontrado.estoque || 0, 10);
+        if (delta > atualEstoque) {
+          return { success: false, message: `Estoque insuficiente para ${encontrado.nome}. Disponível: ${atualEstoque}, requisitado adicional: ${delta}` };
+        }
+      }
+    }
+
+    // Aplicar ajustes de estoque conforme diferença
+    for (const [key, novaQtd] of mapaNovo.entries()) {
+      const antigoQtd = mapaAntigo.get(key) || 0;
+      const delta = novaQtd - antigoQtd; // positivo => reduzir estoque; negativo => restaurar estoque
+      const [, val] = key.split(':');
+      const encontrado = key.startsWith('id:') ? cardapio.find(c => c.id === parseInt(val, 10)) : cardapio.find(c => c.nome === val);
+      if (!encontrado) continue;
+      const atual = parseInt(encontrado.estoque || 0, 10);
+      const novoEstoque = Math.max(0, atual - delta);
+      atualizarEstoque(encontrado.id, novoEstoque);
+    }
+
+    // Atualizar o pedido
+    const pedidosAtualizados = pedidos.map(p => p.id === id ? { ...p, ...dadosAtualizados, itens: novosItens, data: new Date().toISOString() } : p);
+    setPedidos(pedidosAtualizados);
+    return { success: true };
   };
 
   const deletarPedido = (id) => {
+    const pedidoParaDeletar = pedidos.find(p => p.id === id);
+    if (pedidoParaDeletar) {
+      // Se o pedido ainda não estiver cancelado, restauramos o estoque
+      if (pedidoParaDeletar.status !== 'cancelado') {
+        restaurarEstoqueDoPedido(pedidoParaDeletar);
+      }
+    }
     setPedidos(pedidos.filter(p => p.id !== id));
   };
 
   const mudarStatusPedido = (id, novoStatus) => {
-    setPedidos(pedidos.map(p => 
-      p.id === id ? { ...p, status: novoStatus } : p
-    ));
+    setPedidos(pedidos.map(p => {
+      if (p.id === id) {
+        // Se estiver mudando para 'cancelado' e ainda não estava cancelado, restaurar estoque
+        if (novoStatus === 'cancelado' && p.status !== 'cancelado') {
+          restaurarEstoqueDoPedido(p);
+        }
+        return { ...p, status: novoStatus };
+      }
+      return p;
+    }));
   };
 
   const marcarComoPago = (id, statusPago) => {
@@ -141,6 +292,8 @@ export const AppProvider = ({ children }) => {
   const value = {
     pedidos,
     cardapio,
+    perfil,
+    setPerfil,
     adicionarPedido,
     atualizarPedido,
     deletarPedido,

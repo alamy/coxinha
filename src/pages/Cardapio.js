@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useAppContext } from '../AppContext';
 import './Cardapio.css';
-import cardapioData from '../data/cardapio.json';
 import { FaPencilAlt, FaTrashAlt } from 'react-icons/fa';
 
 function Cardapio() {
-  const [itens, setItens] = useState(cardapioData.cardapio);
+  const { perfil, cardapio, adicionarItemCardapio, atualizarItemCardapio, deletarItemCardapio } = useAppContext();
+  // Use global cardapio from context so changes persist across app and to localStorage
+  const itens = cardapio || [];
   const [mostrarForm, setMostrarForm] = useState(false);
   const [editando, setEditando] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filtroCategoria, setFiltroCategoria] = useState('todos');
+  const formRef = useRef(null);
   const [formData, setFormData] = useState({
     nome: '',
     preco: '',
-    disponivel: true
+    categoria: 'coxinha',
+    disponivel: true,
+    estoque: 0
   });
 
   const handleInputChange = (e) => {
@@ -25,28 +32,31 @@ function Cardapio() {
     e.preventDefault();
     
     if (editando) {
-      // Editar item existente
-      setItens(itens.map(item => 
-        item.id === editando.id 
-          ? { ...item, ...formData, preco: parseFloat(formData.preco), estoque: parseInt(formData.estoque) }
-          : item
-      ));
+      // Editar item existente via contexto
+      const itemAtualizado = {
+        ...editando,
+        ...formData,
+        preco: parseFloat(formData.preco),
+        estoque: parseInt(formData.estoque)
+      };
+      atualizarItemCardapio(editando.id, itemAtualizado);
       setEditando(null);
     } else {
-      // Adicionar novo item
+      // Adicionar novo item via contexto
+      const novoId = itens.length > 0 ? Math.max(...itens.map(i => i.id)) + 1 : 1;
       const novoItem = {
-        id: Math.max(...itens.map(i => i.id), 0) + 1,
+        id: novoId,
         nome: formData.nome,
-        categoria: 'coxinha',
+        categoria: formData.categoria,
         preco: parseFloat(formData.preco),
         disponivel: formData.disponivel,
         estoque: parseInt(formData.estoque)
       };
-      setItens([...itens, novoItem]);
+      adicionarItemCardapio(novoItem);
     }
     
     // Resetar formulário
-    setFormData({ nome: '', preco: '', disponivel: true, estoque: 0 });
+    setFormData({ nome: '', preco: '', categoria: 'coxinha', disponivel: true, estoque: 0 });
     setMostrarForm(false);
   };
 
@@ -55,20 +65,27 @@ function Cardapio() {
     setFormData({
       nome: item.nome,
       preco: item.preco.toString(),
+      categoria: item.categoria,
       disponivel: item.disponivel,
       estoque: item.estoque.toString()
     });
     setMostrarForm(true);
+    // Scroll the form into view when editing (small timeout to allow render)
+    setTimeout(() => {
+      if (formRef && formRef.current && formRef.current.scrollIntoView) {
+        formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
   };
 
   const handleDeletar = (id) => {
     if (window.confirm('Tem certeza que deseja deletar este item?')) {
-      setItens(itens.filter(item => item.id !== id));
+      deletarItemCardapio(id);
     }
   };
 
   const handleCancelar = () => {
-    setFormData({ nome: '', preco: '', disponivel: true, estoque: 0 });
+    setFormData({ nome: '', preco: '', categoria: 'coxinha', disponivel: true, estoque: 0 });
     setEditando(null);
     setMostrarForm(false);
   };
@@ -79,13 +96,54 @@ function Cardapio() {
     return 'estoque-ok';
   };
 
+  // Filtrar itens baseado em busca e categoria
+  const itensFiltrados = itens.filter(item => {
+    const matchSearch = item.nome.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchCategoria = filtroCategoria === 'todos' || item.categoria === filtroCategoria;
+    return matchSearch && matchCategoria;
+  });
+
   return (
     <div className="cardapio-container">
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
         {/* Header */}
         <div className="cardapio-header">
-          <h1>🍗 Cardápio Comadre Coxinha</h1>
+          <h1>🍗 Cardápio {perfil?.nomeSistema || 'Comadre Coxinha'}</h1>
           <p>Gerencie os itens do cardápio</p>
+        </div>
+
+        {/* Barra de Filtros */}
+        <div className="cardapio-filtros">
+          <div className="cardapio-busca-container">
+            <input
+              type="text"
+              placeholder="🔍 Buscar produto..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="cardapio-busca"
+            />
+          </div>
+
+          <div className="cardapio-filtros-categoria">
+            <button
+              className={`btn-filtro ${filtroCategoria === 'todos' ? 'ativo' : ''}`}
+              onClick={() => setFiltroCategoria('todos')}
+            >
+              📋 Todos
+            </button>
+            <button
+              className={`btn-filtro ${filtroCategoria === 'coxinha' ? 'ativo' : ''}`}
+              onClick={() => setFiltroCategoria('coxinha')}
+            >
+              🍗 Coxinhas
+            </button>
+            <button
+              className={`btn-filtro ${filtroCategoria === 'bebida' ? 'ativo' : ''}`}
+              onClick={() => setFiltroCategoria('bebida')}
+            >
+              🥤 Bebidas
+            </button>
+          </div>
         </div>
 
         {/* Botão Adicionar */}
@@ -97,7 +155,7 @@ function Cardapio() {
 
         {/* Formulário */}
         {mostrarForm && (
-          <div className="cardapio-form-container">
+          <div className="cardapio-form-container" ref={formRef}>
             <h2>{editando ? '✏️ Editar Item' : '➕ Novo Item'}</h2>
             <form onSubmit={handleSubmit}>
               <div className="cardapio-form-group">
@@ -126,6 +184,20 @@ function Cardapio() {
                   className="cardapio-form-input"
                   placeholder="Ex: 6.00"
                 />
+              </div>
+
+              <div className="cardapio-form-group">
+                <label className="cardapio-form-label">Categoria</label>
+                <select
+                  name="categoria"
+                  value={formData.categoria}
+                  onChange={handleInputChange}
+                  required
+                  className="cardapio-form-input"
+                >
+                  <option value="coxinha">🍗 Coxinhas</option>
+                  <option value="bebida">🥤 Bebidas</option>
+                </select>
               </div>
 
               <div className="cardapio-form-group">
@@ -183,6 +255,7 @@ function Cardapio() {
               <tr>
                 <th>#</th>
                 <th>Nome do Item</th>
+                <th style={{ textAlign: 'center' }}>Categoria</th>
                 <th style={{ textAlign: 'center' }}>Preço</th>
                 <th style={{ textAlign: 'center' }}>Estoque</th>
                 <th style={{ textAlign: 'center' }}>Status</th>
@@ -190,13 +263,19 @@ function Cardapio() {
               </tr>
             </thead>
             <tbody>
-              {itens.map((item, index) => (
+              {itensFiltrados.map((item, index) => (
                 <tr key={item.id}>
                   <td>
                     <div className="cardapio-item-numero">{index + 1}</div>
                   </td>
                   <td>
                     <div className="cardapio-item-nome">{item.nome}</div>
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <div className="cardapio-categoria-badge">
+                      
+                      {item.categoria === 'coxinha' ? '🍗 Coxinha' : '🥤 Bebida'}
+                    </div>
                   </td>
                   <td style={{ textAlign: 'center' }}>
                     <div className="cardapio-preco-badge">
@@ -238,9 +317,9 @@ function Cardapio() {
             </tbody>
           </table>
 
-          {itens.length === 0 && (
+          {itensFiltrados.length === 0 && (
             <div className="cardapio-vazio">
-              <p>📝 Nenhum item no cardápio. Adicione o primeiro!</p>
+              <p>📝 {searchTerm || filtroCategoria !== 'todos' ? 'Nenhum produto encontrado com este filtro.' : 'Nenhum item no cardápio. Adicione o primeiro!'}</p>
             </div>
           )}
         </div>

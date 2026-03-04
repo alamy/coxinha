@@ -103,6 +103,46 @@
       "preco": 5.50,
       "disponivel": true,
       "estoque": 18
+    },
+    {
+      "id": 14,
+      "nome": "Suco de Laranja",
+      "categoria": "bebida",
+      "preco": 5.00,
+      "disponivel": true,
+      "estoque": 25
+    },
+    {
+      "id": 15,
+      "nome": "Suco de Morango",
+      "categoria": "bebida",
+      "preco": 5.00,
+      "disponivel": true,
+      "estoque": 20
+    },
+    {
+      "id": 16,
+      "nome": "Refrigerante 350ml",
+      "categoria": "bebida",
+      "preco": 4.00,
+      "disponivel": true,
+      "estoque": 30
+    },
+    {
+      "id": 17,
+      "nome": "Água mineral 500ml",
+      "categoria": "bebida",
+      "preco": 2.00,
+      "disponivel": true,
+      "estoque": 50
+    },
+    {
+      "id": 18,
+      "nome": "Cerveja artesanal 600ml",
+      "categoria": "bebida",
+      "preco": 12.00,
+      "disponivel": true,
+      "estoque": 15
     }
   ]
 }

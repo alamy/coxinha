@@ -1,12 +1,13 @@
+
 import React, { useMemo, useRef } from 'react';
-import './Caixa.css';
 import { useAppContext } from '../AppContext';
 import caixaData from '../data/caixa.json';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import './Caixa.css';
 
 function Caixa() {
-  const { pedidos } = useAppContext();
+  const { pedidos, perfil } = useAppContext();
   const relatorioRef = useRef(null);
 
   // Calcular estatísticas
@@ -165,10 +166,10 @@ function Caixa() {
     <div className="caixa-container">
       <div className="caixa-content" ref={relatorioRef}>
         {/* Header */}
-        <div className="caixa-header">
-          <h1>💰 Caixa do Dia</h1>
-          <p>Resumo financeiro e estatísticas de vendas</p>
-          <p className="data-hoje">{new Date().toLocaleDateString('pt-BR', { 
+        <div className="caixa-header" style={{ background: perfil?.cor, color: perfil?.texto }}>
+          <h1 style={{ color: perfil?.texto }}>💰 Caixa do Dia</h1>
+          <p style={{ color: perfil?.texto }}>Resumo financeiro e estatísticas de vendas</p>
+          <p className="data-hoje" style={{ color: perfil?.texto }}>{new Date().toLocaleDateString('pt-BR', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 

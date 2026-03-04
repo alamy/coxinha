@@ -1,13 +1,46 @@
 .App {
   min-height: 100vh;
-  background-color: #fef3e2;
+  background-color: var(--background-color, #f4f8ff);
+  color: var(--text-color, #0b2540);
+  transition: background 0.3s, color 0.3s;
 }
 
 .navbar {
-  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+  background: var(--header-color, var(--brand-color, #0d6efd));
   padding: 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  border-bottom: 4px solid #d2691e;
+  border-bottom: 4px solid var(--brand-color, #0d6efd);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Tables use a configurable table color */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+table thead {
+  background: var(--table-color, #e9f5ff);
+  color: var(--text-color, #0b2540);
+}
+
+table th,
+table td {
+  padding: 8px 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 0 24px;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.10);
+  flex-shrink: 0;
+  color: var(--header-text-color, #fff);
 }
 
 .navbar ul {
@@ -17,6 +50,7 @@
   margin: 0;
   padding: 0;
   max-width: 100%;
+  flex: 1;
 }
 
 .navbar li {
@@ -25,7 +59,7 @@
 }
 
 .navbar a {
-  color: #fef3e2;
+  color: var(--header-text-color, #fff);
   text-decoration: none;
   font-size: 18px;
   font-weight: 700;
@@ -39,7 +73,7 @@
 }
 
 .navbar a:hover {
-  background-color: rgba(210, 105, 30, 0.3);
-  border-bottom-color: #ff8c42;
+  background-color: rgba(13,110,253,0.08);
+  border-bottom-color: rgba(13,110,253,0.18);
   color: #fff;
 }

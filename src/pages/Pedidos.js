@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
-import './Pedidos.css';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../AppContext';
+import './Pedidos.css';
 import { FaPencilAlt, FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa';
 
 function Pedidos() {
-  const { pedidos, cardapio, adicionarPedido, atualizarPedido, deletarPedido, mudarStatusPedido, marcarComoPago } = useAppContext();
+  const { pedidos, cardapio, adicionarPedido, atualizarPedido, deletarPedido, mudarStatusPedido, marcarComoPago, perfil } = useAppContext();
+
+  const audioPronto = useRef(null);
+
+  useEffect(() => {
+    audioPronto.current = new Audio(process.env.PUBLIC_URL + '/olha_a_coxinha.mp3');
+  }, []);
+
   const [mostrarForm, setMostrarForm] = useState(false);
   const [editando, setEditando] = useState(null);
   const [formData, setFormData] = useState({
@@ -113,6 +121,10 @@ function Pedidos() {
 
   const mudarStatus = (pedidoId, novoStatus) => {
     mudarStatusPedido(pedidoId, novoStatus);
+    if (novoStatus === 'pronto' && audioPronto.current) {
+      // tentar tocar o áudio; catch para evitar promise rejection
+      audioPronto.current.play().catch(() => {});
+    }
   };
 
   return (
