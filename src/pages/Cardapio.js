@@ -279,7 +279,7 @@ function Cardapio() {
                   </td>
                   <td style={{ textAlign: 'center' }}>
                     <div className="cardapio-preco-badge">
-                      <span className="cardapio-preco-valor">R$ {item.preco.toFixed(2)}</span>
+                      <span className="cardapio-preco-valor">R$ {item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                     </div>
                   </td>
                   <td style={{ textAlign: 'center' }}>

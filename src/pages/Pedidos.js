@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAppContext } from '../AppContext';
 import './Pedidos.css';
-import { FaPencilAlt, FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa';
+import { FaPencilAlt, FaTrashAlt, FaPrint, FaReceipt, FaEye, FaPlus, FaMinus, FaTimes } from 'react-icons/fa';
 
 function Pedidos() {
   const { pedidos, cardapio, adicionarPedido, atualizarPedido, deletarPedido, mudarStatusPedido, marcarComoPago } = useAppContext();
@@ -20,6 +20,9 @@ function Pedidos() {
     observacoes: ''
   });
   const [itensSelecionados, setItensSelecionados] = useState([]);
+  const [pedidoParaImprimir, setPedidoParaImprimir] = useState(null);
+  const [impressaoAtiva, setImpressaoAtiva] = useState(false);
+  const [modalPedido, setModalPedido] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -119,6 +122,26 @@ function Pedidos() {
     setMostrarForm(false);
   };
 
+  const handleImprimir = (pedido, tipo) => {
+    setPedidoParaImprimir(pedido);
+    setImpressaoAtiva(tipo);
+  };
+
+  const handleVerDetalhes = (pedido) => {
+    setModalPedido(pedido);
+  };
+
+  const fecharModal = () => {
+    setModalPedido(null);
+  };
+
+  useEffect(() => {
+    if (impressaoAtiva && pedidoParaImprimir) {
+      window.print();
+      setImpressaoAtiva(false);
+    }
+  }, [impressaoAtiva, pedidoParaImprimir]);
+
   const mudarStatus = (pedidoId, novoStatus) => {
     mudarStatusPedido(pedidoId, novoStatus);
     if (novoStatus === 'pronto' && audioPronto.current) {
@@ -177,7 +200,7 @@ function Pedidos() {
                       }}
                     >
                       <div className="item-card-nome">{item.nome}</div>
-                      <div className="item-card-preco">R$ {item.preco.toFixed(2)}</div>
+                      <div className="item-card-preco">R$ {item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
                       <div className={`item-estoque-info ${item.estoque === 0 ? 'sem-estoque-text' : item.estoque < 5 ? 'baixo-estoque-text' : 'ok-estoque-text'}`}>
                         {item.estoque === 0 ? '❌ SEM ESTOQUE' : 
                          item.estoque < 5 ? `⚠️ Restam ${item.estoque}` : 
@@ -196,7 +219,7 @@ function Pedidos() {
                     <div key={item.id} className="item-selecionado">
                       <div className="item-selecionado-info">
                         <span className="item-selecionado-nome">{item.nome}</span>
-                        <span className="item-selecionado-preco">R$ {item.preco.toFixed(2)}</span>
+                        <span className="item-selecionado-preco">R$ {item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                       </div>
                       <div className="item-controles">
                         <button
@@ -219,7 +242,7 @@ function Pedidos() {
                   ))}
                   <div className="pedido-total">
                     <span className="pedido-total-label">Total do Pedido:</span>
-                    <span className="pedido-total-valor">R$ {calcularTotal().toFixed(2)}</span>
+                    <span className="pedido-total-valor">R$ {calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               )}
@@ -256,7 +279,6 @@ function Pedidos() {
               <tr>
                 <th>#</th>
                 <th>Cliente</th>
-                <th>Itens</th>
                 <th style={{ textAlign: 'center' }}>Total</th>
                 <th style={{ textAlign: 'center' }}>Status</th>
                 <th style={{ textAlign: 'center' }}>Pagamento</th>
@@ -275,18 +297,9 @@ function Pedidos() {
                       <div className="pedido-observacao">"{pedido.observacoes}"</div>
                     )}
                   </td>
-                  <td>
-                    <div className="pedido-itens-lista">
-                      {pedido.itens.map((item, idx) => (
-                        <div key={idx} className="pedido-item">
-                          <span className="pedido-item-quantidade">{item.quantidade}x</span> {item.nome}
-                        </div>
-                      ))}
-                    </div>
-                  </td>
                   <td style={{ textAlign: 'center' }}>
                     <div className="pedido-total-badge">
-                      <span className="pedido-total-valor-table">R$ {pedido.total.toFixed(2)}</span>
+                      <span className="pedido-total-valor-table">R$ {pedido.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                     </div>
                   </td>
                   <td style={{ textAlign: 'center' }}>
@@ -316,11 +329,32 @@ function Pedidos() {
                   <td>
                     <div className="acoes-container">
                       <button
+                        onClick={() => handleVerDetalhes(pedido)}
+                        className="btn-acao btn-ver-detalhes"
+                        title="Ver detalhes do pedido"
+                      >
+                        <FaEye />
+                      </button>
+                      <button
                         onClick={() => handleEditar(pedido)}
                         className="btn-acao btn-editar"
                         title="Editar pedido"
                       >
                         <FaPencilAlt />
+                      </button>
+                      <button
+                        onClick={() => handleImprimir(pedido, 'cliente')}
+                        className="btn-acao btn-imprimir-cliente"
+                        title="Imprimir para cliente"
+                      >
+                        <FaReceipt />
+                      </button>
+                      <button
+                        onClick={() => handleImprimir(pedido, 'cozinha')}
+                        className="btn-acao btn-imprimir-cozinha"
+                        title="Imprimir para cozinha"
+                      >
+                        <FaPrint />
                       </button>
                       <button
                         onClick={() => handleDeletar(pedido.id)}
@@ -342,6 +376,130 @@ function Pedidos() {
             </div>
           )}
         </div>
+
+        {pedidoParaImprimir && (
+          <div className={`pedido-impressao ${impressaoAtiva}`} aria-hidden="true">
+            {impressaoAtiva === 'cliente' && (
+              <div className="impressao-recibo cliente">
+                <div className="impressao-cabecalho">Comprovante do Cliente</div>
+                <div className="impressao-info">
+                  <div><strong>Pedido:</strong> #{pedidoParaImprimir.id}</div>
+                  {pedidoParaImprimir.data && (
+                    <div><strong>Data/Hora:</strong> {new Date(pedidoParaImprimir.data).toLocaleString('pt-BR')}</div>
+                  )}
+                </div>
+                <div className="impressao-itens">
+                  <div className="impressao-subtitulo">Itens</div>
+                  {pedidoParaImprimir.itens.map((item, idx) => (
+                    <div key={idx} className="impressao-item">
+                      <span>{item.quantidade}x</span> {item.nome}
+                      <span className="impressao-item-preco">R$ {item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="impressao-total">
+                  TOTAL: R$ {pedidoParaImprimir.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </div>
+                <div className="impressao-rodape">Obrigado! Bom apetite.</div>
+              </div>
+            )}
+
+            {impressaoAtiva === 'cozinha' && (
+              <div className="impressao-recibo cozinha">
+                <div className="impressao-cabecalho">Pedido para Cozinha</div>
+                <div className="impressao-info">
+                  <div><strong>Pedido:</strong> #{pedidoParaImprimir.id}</div>
+                  {pedidoParaImprimir.data && (
+                    <div><strong>Data/Hora:</strong> {new Date(pedidoParaImprimir.data).toLocaleString('pt-BR')}</div>
+                  )}
+                  <div><strong>Cliente:</strong> {pedidoParaImprimir.cliente}</div>
+                  <div><strong>Status:</strong> {pedidoParaImprimir.status}</div>
+                  <div><strong>Pago:</strong> {pedidoParaImprimir.pago ? 'Sim' : 'Não'}</div>
+                </div>
+                <div className="impressao-itens">
+                  <div className="impressao-subtitulo">Itens</div>
+                  {pedidoParaImprimir.itens.map((item, idx) => (
+                    <div key={idx} className="impressao-item">
+                      <span>{item.quantidade}x</span> {item.nome}
+                      <span className="impressao-item-preco">R$ {item.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                  ))}
+                </div>
+                {pedidoParaImprimir.observacoes && (
+                  <div className="impressao-observacoes">
+                    <strong>Observações:</strong> {pedidoParaImprimir.observacoes}
+                  </div>
+                )}
+                <div className="impressao-total">
+                  TOTAL: R$ {pedidoParaImprimir.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </div>
+                <div className="impressao-rodape">---</div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Modal de Detalhes do Pedido */}
+        {modalPedido && (
+          <div className="modal-overlay" onClick={fecharModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2>Detalhes do Pedido #{modalPedido.id}</h2>
+                <button onClick={fecharModal} className="btn-fechar-modal">
+                  <FaTimes />
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="detalhe-info">
+                  <div className="detalhe-item">
+                    <strong>Cliente:</strong> {modalPedido.cliente}
+                  </div>
+                  <div className="detalhe-item">
+                    <strong>Status:</strong> {modalPedido.status}
+                  </div>
+                  <div className="detalhe-item">
+                    <strong>Pagamento:</strong> {modalPedido.pago ? 'Pago' : 'Pendente'}
+                  </div>
+                  {modalPedido.data && (
+                    <div className="detalhe-item">
+                      <strong>Data/Hora:</strong> {new Date(modalPedido.data).toLocaleString('pt-BR')}
+                    </div>
+                  )}
+                  {modalPedido.observacoes && (
+                    <div className="detalhe-item">
+                      <strong>Observações:</strong> {modalPedido.observacoes}
+                    </div>
+                  )}
+                </div>
+
+                <div className="detalhe-itens">
+                  <h3>Itens do Pedido</h3>
+                  {modalPedido.itens.map((item, idx) => (
+                    <div key={idx} className="detalhe-item-pedido">
+                      <div className="item-info">
+                        <span className="item-quantidade">{item.quantidade}x</span>
+                        <span className="item-nome">{item.nome}</span>
+                      </div>
+                      <div className="item-preco">R$ {(item.preco * item.quantidade).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                    </div>
+                  ))}
+                  <div className="detalhe-total">
+                    <strong>Total: R$ {modalPedido.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
+                  </div>
+                </div>
+
+                <div className="modal-actions">
+                  <button onClick={() => handleImprimir(modalPedido, 'cliente')} className="btn-modal-imprimir">
+                    <FaReceipt /> Imprimir Cliente
+                  </button>
+                  <button onClick={() => handleImprimir(modalPedido, 'cozinha')} className="btn-modal-imprimir">
+                    <FaPrint /> Imprimir Cozinha
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

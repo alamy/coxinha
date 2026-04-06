@@ -193,7 +193,7 @@ function Caixa() {
             <div className="card-icon">💰</div>
             <div className="card-info">
               <div className="card-label">Total Recebido</div>
-              <div className="card-valor">R$ {stats.totalPago.toFixed(2)}</div>
+              <div className="card-valor">R$ {stats.totalPago.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
               <div className="card-detalhe">
                 {stats.usandoDadosMock 
                   ? `0 pedidos`
@@ -206,7 +206,7 @@ function Caixa() {
             <div className="card-icon">⏳</div>
             <div className="card-info">
               <div className="card-label">Pendente</div>
-              <div className="card-valor">R$ {stats.totalPendente.toFixed(2)}</div>
+              <div className="card-valor">R$ {stats.totalPendente.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
               <div className="card-detalhe">
                 {stats.usandoDadosMock 
                   ? `0 pedidos`
@@ -219,7 +219,7 @@ function Caixa() {
             <div className="card-icon">📊</div>
             <div className="card-info">
               <div className="card-label">Faturamento Total</div>
-              <div className="card-valor">R$ {stats.totalGeral.toFixed(2)}</div>
+              <div className="card-valor">R$ {stats.totalGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
               <div className="card-detalhe">
                 {stats.usandoDadosMock 
                   ? `0 pedidos`
@@ -269,7 +269,7 @@ function Caixa() {
                     <div className="produto-nome">{item.nome}</div>
                     <div className="produto-stats">
                       <span className="produto-qtd">{item.quantidade} unidades</span>
-                      <span className="produto-total">R$ {item.total.toFixed(2)}</span>
+                      <span className="produto-total">R$ {item.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                     </div>
                   </div>
                   <div className="produto-barra">
@@ -303,7 +303,7 @@ function Caixa() {
                       {pedido.cliente}
                     </div>
                     <div className="pedido-valor-destaque">
-                      R$ {pedido.total.toFixed(2)}
+                      R$ {pedido.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </div>
                   </div>
                   <div className="pedido-pago-itens">
@@ -350,7 +350,7 @@ function Caixa() {
                       {pedido.cliente}
                     </div>
                     <div className="pedido-valor-pendente">
-                      R$ {pedido.total.toFixed(2)}
+                      R$ {pedido.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </div>
                   </div>
                   <div className="pedido-pendente-itens">
@@ -374,7 +374,7 @@ function Caixa() {
               <div className="meta-icon">📅</div>
               <div className="meta-info">
                 <div className="meta-label">Meta Diária</div>
-                <div className="meta-valor">R$ {caixaData.metas.diaria.toFixed(2)}</div>
+                <div className="meta-valor">R$ {caixaData.metas.diaria.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
                 <div className="meta-progresso">
                   <div className="meta-barra">
                     <div 
@@ -395,7 +395,7 @@ function Caixa() {
               <div className="meta-icon">🎫</div>
               <div className="meta-info">
                 <div className="meta-label">Ticket Médio</div>
-                <div className="meta-valor">R$ {caixaData.estatisticas.ticketMedio.toFixed(2)}</div>
+                <div className="meta-valor">R$ {caixaData.estatisticas.ticketMedio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
                 <div className="meta-detalhe">Valor médio por pedido</div>
               </div>
             </div>
