@@ -7,7 +7,7 @@ import jsPDF from 'jspdf';
 import './Caixa.css';
 
 function Caixa() {
-  const { pedidos, perfil } = useAppContext();
+  const { pedidos, perfil, resetarPedidos } = useAppContext();
   const relatorioRef = useRef(null);
 
   // Calcular estatísticas
@@ -162,6 +162,20 @@ function Caixa() {
     alert(`✅ Dados exportados com sucesso!\nArquivo: ${nomeArquivo}`);
   };
 
+  // Função para resetar todos os pedidos
+  const handleReset = () => {
+    const confirmacao = window.confirm(
+      '⚠️ ATENÇÃO!\n\nVocê tem certeza que deseja RESETAR todos os pedidos?\n\n' +
+      'Isso vai:\n• Limpar TODOS os pedidos\n• Restaurar o estoque original do cardápio\n\n' +
+      'Esta ação NÃO pode ser desfeita!'
+    );
+    
+    if (confirmacao) {
+      resetarPedidos();
+      alert('✅ Todos os pedidos foram resetados com sucesso!');
+    }
+  };
+
   return (
     <div className="caixa-container">
       <div className="caixa-content" ref={relatorioRef}>
@@ -183,6 +197,9 @@ function Caixa() {
             </button>
             <button onClick={exportarDadosJSON} className="btn-exportar btn-json">
               📊 Exportar Dados (JSON)
+            </button>
+            <button onClick={handleReset} className="btn-exportar btn-reset" style={{ backgroundColor: '#dc3545' }}>
+              🔄 Resetar Pedidos
             </button>
           </div>
         </div>

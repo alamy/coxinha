@@ -289,6 +289,16 @@ export const AppProvider = ({ children }) => {
     ));
   };
 
+  // Função para resetar todos os pedidos e restaurar o estoque
+  const resetarPedidos = () => {
+    // Limpar pedidos
+    setPedidos([]);
+    // Restaurar estoque original do cardápio
+    setCardapio(cardapioDataInicial.cardapio);
+    // Limpar localStorage de pedidos
+    localStorage.setItem('pedidos', JSON.stringify([]));
+  };
+
   const value = {
     pedidos,
     cardapio,
@@ -303,6 +313,7 @@ export const AppProvider = ({ children }) => {
     atualizarItemCardapio,
     deletarItemCardapio,
     atualizarEstoque,
+    resetarPedidos,
     setPedidos,
     setCardapio
   };
