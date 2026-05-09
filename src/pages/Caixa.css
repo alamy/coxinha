@@ -93,6 +93,24 @@
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
 }
 
+.btn-reset-cardapio {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border: 3px solid #b45309;
+}
+
+.btn-reset-cardapio:hover {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+}
+
+.btn-reset-pedidos {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: 3px solid #b91c1c;
+}
+
+.btn-reset-pedidos:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
 /* Cards de Resumo */
 .resumo-cards {
   display: grid;
@@ -561,6 +579,7 @@
 
 /* Seção Metas */
 .secao-metas {
+  margin-top: 20px;
   background: white;
   border-radius: 20px;
   padding: 40px;

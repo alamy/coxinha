@@ -5,9 +5,10 @@ import caixaData from '../data/caixa.json';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './Caixa.css';
+import MetasEstatisticas from './MetasEstatisticas';
 
 function Caixa() {
-  const { pedidos, perfil, resetarPedidos } = useAppContext();
+  const { pedidos, perfil, resetarCardapio, resetarPedidosECaixa } = useAppContext();
   const relatorioRef = useRef(null);
 
   // Calcular estatísticas
@@ -162,17 +163,31 @@ function Caixa() {
     alert(`✅ Dados exportados com sucesso!\nArquivo: ${nomeArquivo}`);
   };
 
-  // Função para resetar todos os pedidos
-  const handleReset = () => {
+  // Função para resetar apenas o cardápio
+  const handleResetCardapio = () => {
     const confirmacao = window.confirm(
-      '⚠️ ATENÇÃO!\n\nVocê tem certeza que deseja RESETAR todos os pedidos?\n\n' +
-      'Isso vai:\n• Limpar TODOS os pedidos\n• Restaurar o estoque original do cardápio\n\n' +
+      '⚠️ ATENÇÃO!\n\nVocê tem certeza que deseja RESETAR o cardápio?\n\n' +
+      'Isso vai:\n• Restaurar o estoque original de todos os itens\n\n' +
       'Esta ação NÃO pode ser desfeita!'
     );
     
     if (confirmacao) {
-      resetarPedidos();
-      alert('✅ Todos os pedidos foram resetados com sucesso!');
+      resetarCardapio();
+      alert('✅ Cardápio resetado com sucesso!');
+    }
+  };
+
+  // Função para resetar pedidos e caixa
+  const handleResetPedidosECaixa = () => {
+    const confirmacao = window.confirm(
+      '⚠️ ATENÇÃO!\n\nVocê tem certeza que deseja RESETAR os pedidos e caixa?\n\n' +
+      'Isso vai:\n• Limpar TODOS os pedidos\n• Zerar o caixa (valores serão recalculados)\n\n' +
+      'Esta ação NÃO pode ser desfeita!'
+    );
+    
+    if (confirmacao) {
+      resetarPedidosECaixa();
+      alert('✅ Pedidos e caixa resetados com sucesso!');
     }
   };
 
@@ -198,8 +213,11 @@ function Caixa() {
             <button onClick={exportarDadosJSON} className="btn-exportar btn-json">
               📊 Exportar Dados (JSON)
             </button>
-            <button onClick={handleReset} className="btn-exportar btn-reset" style={{ backgroundColor: '#dc3545' }}>
-              🔄 Resetar Pedidos
+            <button onClick={handleResetCardapio} className="btn-exportar btn-reset-cardapio" style={{ backgroundColor: '#ffc107' }}>
+              🔄 Resetar Cardápio
+            </button>
+            <button onClick={handleResetPedidosECaixa} className="btn-exportar btn-reset-pedidos" style={{ backgroundColor: '#dc3545' }}>
+              🔄 Resetar Pedidos & Caixa
             </button>
           </div>
         </div>
@@ -384,67 +402,7 @@ function Caixa() {
         )}
 
         {/* Metas e Estatísticas Gerais */}
-        <div className="secao-metas">
-          <h2>🎯 Metas e Estatísticas</h2>
-          <div className="metas-grid">
-            <div className="meta-card">
-              <div className="meta-icon">📅</div>
-              <div className="meta-info">
-                <div className="meta-label">Meta Diária</div>
-                <div className="meta-valor">R$ {caixaData.metas.diaria.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
-                <div className="meta-progresso">
-                  <div className="meta-barra">
-                    <div 
-                      className="meta-barra-preenchida"
-                      style={{ 
-                        width: `${Math.min((stats.totalPago / caixaData.metas.diaria) * 100, 100)}%` 
-                      }}
-                    ></div>
-                  </div>
-                  <span className="meta-percentual">
-                    {((stats.totalPago / caixaData.metas.diaria) * 100).toFixed(1)}%
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="meta-card">
-              <div className="meta-icon">🎫</div>
-              <div className="meta-info">
-                <div className="meta-label">Ticket Médio</div>
-                <div className="meta-valor">R$ {caixaData.estatisticas.ticketMedio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
-                <div className="meta-detalhe">Valor médio por pedido</div>
-              </div>
-            </div>
-
-            <div className="meta-card">
-              <div className="meta-icon">⏰</div>
-              <div className="meta-info">
-                <div className="meta-label">Horário de Pico</div>
-                <div className="meta-valor-texto">{caixaData.estatisticas.horarioPico}</div>
-                <div className="meta-detalhe">Maior movimento</div>
-              </div>
-            </div>
-
-            <div className="meta-card">
-              <div className="meta-icon"></div>
-              <div className="meta-info">
-                <div className="meta-label">Crescimento</div>
-                <div className="meta-valor-numero">+{caixaData.estatisticas.taxaCrescimento}%</div>
-                <div className="meta-detalhe">Comparado ao mês anterior</div>
-              </div>
-            </div>
-
-            <div className="meta-card">
-              <div className="meta-icon">🏆</div>
-              <div className="meta-info">
-                <div className="meta-label">Campeão de Vendas</div>
-                <div className="meta-valor-texto">{caixaData.estatisticas.produtoMaisVendido}</div>
-                <div className="meta-detalhe">Produto mais popular</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <MetasEstatisticas stats={stats} caixaData={caixaData} />
 
         {/* Indicador de dados mockados */}
         {stats.usandoDadosMock && (
