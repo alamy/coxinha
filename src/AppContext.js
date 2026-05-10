@@ -299,6 +299,17 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem('pedidos', JSON.stringify([]));
   };
 
+  // Função para resetar apenas o cardápio (restaurar estoque original)
+  const resetarCardapio = () => {
+    setCardapio(cardapioDataInicial.cardapio);
+  };
+
+  // Função para resetar apenas os pedidos (limpa pedidos, caixa reflete)
+  const resetarPedidosECaixa = () => {
+    setPedidos([]);
+    localStorage.setItem('pedidos', JSON.stringify([]));
+  };
+
   const value = {
     pedidos,
     cardapio,
@@ -314,6 +325,8 @@ export const AppProvider = ({ children }) => {
     deletarItemCardapio,
     atualizarEstoque,
     resetarPedidos,
+    resetarCardapio,
+    resetarPedidosECaixa,
     setPedidos,
     setCardapio
   };
